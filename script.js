@@ -34,6 +34,7 @@ $(document).on("click", ".edit-btn", function(){
     $("#lastName").val(tableData[rowIndex].lastName);
     $("#handle").val(tableData[rowIndex].handle);
     $("#submitNewRow").remove();
+    $("#editCurrentRow").remove();
     $(".modal-footer").append(
       `<button type="button" class="btn btn-primary" id="editCurrentRow" data-index="${rowIndex}">Save changes</button>`
     );
@@ -75,6 +76,7 @@ $(document).on("click", "#showBlankModal", function() {
     $("#firstName").val("");
     $("#lastName").val("");
     $("#handle").val("");
+    $("#submitNewRow").remove();
     $("#editCurrentRow").remove();
     $(".modal-footer").append(
       `<button type="button" class="btn btn-primary" id="submitNewRow">Add Row</button>`
