@@ -33,12 +33,7 @@ $(document).on("click", ".edit-btn", function(){
     $("#firstName").val(tableData[rowIndex].firstName);
     $("#lastName").val(tableData[rowIndex].lastName);
     $("#handle").val(tableData[rowIndex].handle);
-    $("#submitNewRow").remove();
-    $("#editCurrentRow").remove();
-    $(".modal-footer").append(
-      `<button type="button" class="btn btn-primary" id="editCurrentRow" data-index="${rowIndex}">Save changes</button>`
-    );
-    $("#addRowModal").modal('show');
+    editModal("editCurrentRow", "Edit Row", rowIndex);
 });
 
 $(document).on("click", "#submitNewRow", function(){
@@ -76,12 +71,7 @@ $(document).on("click", "#showBlankModal", function() {
     $("#firstName").val("");
     $("#lastName").val("");
     $("#handle").val("");
-    $("#submitNewRow").remove();
-    $("#editCurrentRow").remove();
-    $(".modal-footer").append(
-      `<button type="button" class="btn btn-primary" id="submitNewRow">Add Row</button>`
-    );
-    $("#addRowModal").modal("show");
+    editModal("submitNewRow", "Add Row");
 })
 
 function populateTable(array) {
@@ -110,6 +100,15 @@ function addTableRow(object, index) {
     tableRow.append(`<td data-key="${key}">${val}</tr>`);
   });
   return tableRow;
+}
+
+function editModal(buttonId, buttonText, currentIndex) {
+    $("#submitNewRow").remove();
+    $("#editCurrentRow").remove();
+    $(".modal-footer").append(
+      `<button type="button" class="btn btn-primary" id="${buttonId}" data-index="${currentIndex}">${buttonText}</button>`
+    );
+    $("#addRowModal").modal("show");
 }
 
 fakeAjax();
