@@ -1,46 +1,113 @@
-var tableRowData = {
-    FirstName: "John",
-    LastName: "Doe",
-    Handle: "@johndoe"
+var fakeDatabase = [
+  {
+    firstName: "John",
+    lastName: "Doe",
+    handle: "@johndoe"
+  },
+  {
+    firstName: "Sarah",
+    lastName: "Smith",
+    handle: "@sasmith"
+  },
+  {
+    firstName: "Robert",
+    lastName: "Plant",
+    handle: "@robplanter"
+  }
+];
+
+var tableData = [];
+
+$(document).on("click", ".delete-btn", function() {
+  var confirmDelete = confirm("are you sure you want to delete this line?");
+  if (confirmDelete) {
+    $(this)
+      .parent()
+      .parent()
+      .remove();
+  }
+});
+
+$(document).on("click", ".edit-btn", function(){
+    var rowIndex = $(this).attr("data-index");
+    $("#firstName").val(tableData[rowIndex].firstName);
+    $("#lastName").val(tableData[rowIndex].lastName);
+    $("#handle").val(tableData[rowIndex].handle);
+    $("#submitNewRow").remove();
+    $(".modal-footer").append(
+      `<button type="button" class="btn btn-primary" id="editCurrentRow" data-index="${rowIndex}">Save changes</button>`
+    );
+    $("#addRowModal").modal('show');
+});
+
+$(document).on("click", "#submitNewRow", function(){
+    var newRowData = {
+        firstName: $("#firstName").val().trim(),
+        lastName: $("#lastName").val().trim(),
+        handle: $("#handle").val().trim()
+    }
+    tableData.push(newRowData);
+    populateTable(tableData);
+    $("#firstName").val("");
+    $("#lastName").val("");
+    $("#handle").val("");
+    $("#addRowModal").modal('hide');
+})
+
+$(document).on("click", "#editCurrentRow", function(){
+    var rowIndex = $(this).attr("data-index");
+    tableData[rowIndex] = {
+      firstName: $("#firstName")
+        .val()
+        .trim(),
+      lastName: $("#lastName")
+        .val()
+        .trim(),
+      handle: $("#handle")
+        .val()
+        .trim()
+    };
+    populateTable(tableData);
+    $("#addRowModal").modal("hide");
+})
+
+$(document).on("click", "#showBlankModal", function() {
+    $("#firstName").val("");
+    $("#lastName").val("");
+    $("#handle").val("");
+    $("#editCurrentRow").remove();
+    $(".modal-footer").append(
+      `<button type="button" class="btn btn-primary" id="submitNewRow">Add Row</button>`
+    );
+    $("#addRowModal").modal("show");
+})
+
+function populateTable(array) {
+  $("#table-body").empty();
+    array.forEach((object, index) => {
+    $("#table-body").append(addTableRow(object, index));
+  });
 }
 
-$(document).on("click", "#add-row", function() {
-    $("#table-body").append(addTableRow(tableRowData));
-})
+function fakeAjax() {
+    fakeDatabase.forEach(obj =>{
+        tableData.push(obj);
+    })
+    populateTable(tableData);
+}
 
-$(document).on("click", ".delete-btn", function(){
-    var confirmDelete = confirm("are you sure you want to delete this line?");
-    if (confirmDelete)
-    {
-        $(this).parent().parent().remove();
-    }
-})
-
-function addTableRow(object) {
-    var tableRow = $("<tr>");
-    tableRow.append(`
+function addTableRow(object, index) {
+  var tableRow = $("<tr>");
+  tableRow.append(`
         <td>
-            <input type="button" value="edit" class="btn btn-primary edit-btn">
+            <input type="button" value="edit" class="btn btn-primary edit-btn" data-index="${index}">
             <input type="button" value="delete" class="btn btn-danger delete-btn"> 
         </td>
     `);
-    $.each(object, function(key, val) {
-        tableRow.append(`<td data-key="${key}" contenteditable="true">${val}</tr>`);
-    })
-    return tableRow;
+  $.each(object, function(key, val) {
+    tableRow.append(`<td data-key="${key}">${val}</tr>`);
+  });
+  return tableRow;
 }
 
-$(document).on("click", "#save-table", function(){
-    var tabledata = [];
-    $("table tbody tr").each(function(){
-        var rowData = {}
-        $(this).children().each(function(){
-            if ($(this).attr("data-key")){
-                // console.log($(this).attr("data-key"));
-                rowData[$(this).attr("data-key")] = $(this).text();
-            }
-        })
-        tabledata.push(rowData);
-    })
-    console.log(tabledata);
-})
+fakeAjax();
